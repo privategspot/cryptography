@@ -1,11 +1,7 @@
 import logging
 
 from typing import List
-
-
-def _tokenize(message, token_size):
-    message_len = len(message)
-    return [message[i:i+token_size] for i in range(0, message_len, token_size)]
+from util import tokenize, pad_with
 
 
 def _permutate(tokens: List[str], key: List[int], key_len: int, reverse: bool = False):
@@ -35,12 +31,12 @@ def encrypt(message: str, key: List[int]):
     )
 
     key_len = len(key)
-    tokens = _tokenize(message, key_len)
+    tokens = tokenize(message, key_len)
 
     # если полседний токен меньше, чем длина ключа, то дополняем пробелами
     last_token = tokens[-1]
     if len(last_token) < key_len:
-        tokens[-1] = last_token.ljust(key_len)
+        tokens[-1] = pad_with(" ", last_token, key_len)
 
     logging.debug(f"message tokens is {tokens}")
 
@@ -63,12 +59,12 @@ def decrypt(message, key):
     )
 
     key_len = len(key)
-    tokens = _tokenize(message, key_len)
+    tokens = tokenize(message, key_len)
 
     # если полседний токен меньше, чем длина ключа, то дополняем пробелами
     last_token = tokens[-1]
     if len(last_token) < key_len:
-        tokens[-1] = last_token.ljust(key_len)
+        tokens[-1] = pad_with(" ", last_token, key_len)
 
     logging.debug(f"message tokens is {tokens}")
 
