@@ -21,8 +21,16 @@ class LinearRandGenerator:
         return res
 
 
-def generate_key(key_len: int, seed: int):
-    lrg = LinearRandGenerator(seed)
+class LinearRandGeneratorWithFeedback(LinearRandGenerator):
+
+    def rand(self):
+        res = super().rand()
+        self._seed = bin(res).count("1")
+        return res
+
+
+def generate_key(key_len: int, rand_gen: LinearRandGenerator, seed: int):
+    lrg = rand_gen(seed)
 
     res = []
     for _ in range(key_len):
